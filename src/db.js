@@ -1,5 +1,6 @@
 // Database setup: opens SQLite and creates the schema if it does not exist yet.
-const Database = require('better-sqlite3');
+// Uses Node's built-in SQLite module (Node 22.13+), so there is no native package to compile.
+const { DatabaseSync } = require('node:sqlite');
 
 const CATEGORIES = ['Economy', 'Compact', 'SUV', 'Van', 'Luxury'];
 const TRANSMISSIONS = ['Automatic', 'Manual'];
@@ -60,9 +61,8 @@ CREATE INDEX IF NOT EXISTS idx_cars_search ON cars(status, location_id, category
 `;
 
 function openDb(file = 'data/car_rental.db') {
-  const db = new Database(file);
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
+  const db = new DatabaseSync(file);
+  db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
   db.exec(SCHEMA);
   const addLoc = db.prepare('INSERT OR IGNORE INTO locations (name) VALUES (?)');
   for (const name of LOCATIONS) addLoc.run(name);

@@ -2,11 +2,11 @@
 
 CP317A group project. Sprint 1 prototype: account registration, login, role-based access, fleet management, and car search.
 
-Built with Node.js, Express, EJS templates, and SQLite (`better-sqlite3`).
+Built with Node.js, Express, EJS templates, and SQLite through Node's built-in `node:sqlite` module, so there is nothing native to compile.
 
 ## Run it
 
-Requires Node.js 20 or newer.
+Requires Node.js 22.13 or newer (check with `node -v`). Node prints an "ExperimentalWarning: SQLite" line on start; that is expected.
 
 ```bash
 npm install
