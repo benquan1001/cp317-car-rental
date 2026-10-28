@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>Fleet</h1>
+  <a class="btn" href="/staff/fleet/new">+ Add car</a>
+</div>
+<p class="tabs" role="navigation" aria-label="Fleet filter">
+  <a href="/staff/fleet" <%- show === 'active' ? 'aria-current="page"' : '' %>>Active (<%= counts.active %>)</a>
+  <a href="/staff/fleet?show=retired" <%- show === 'retired' ? 'aria-current="page"' : '' %>>Retired (<%= counts.retired %>)</a>
+</p>
+<table class="grid">
+  <caption class="sr-only"><%= show === 'active' ? 'Active' : 'Retired' %> cars</caption>
+  <thead><tr><th scope="col">Plate</th><th scope="col">Car</th><th scope="col">Category</th><th scope="col">Seats</th><th scope="col">Transmission</th><th scope="col">Rate/day</th><th scope="col">Location</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+  <tbody>
+  <% if (!cars.length) { %><tr><td colspan="8">No <%= show %> cars.</td></tr><% } %>
+  <% cars.forEach(function (c) { %>
+    <tr>
+      <td><%= c.plate %></td><td><%= c.year %> <%= c.make %> <%= c.model %></td><td><%= c.category %></td><td><%= c.seats %></td>
+      <td><%= c.transmission %></td><td>$<%= c.daily_rate.toFixed(2) %></td><td><%= c.location %></td>
+      <td class="actions">
+        <a class="btn small secondary" href="/staff/fleet/<%= c.id %>/edit">Edit<span class="sr-only"> <%= c.plate %></span></a>
+        <% if (c.status === 'active') { %>
+        <form method="post" action="/staff/fleet/<%= c.id %>/retire" onsubmit="return confirm('Retire <%= c.plate %>? It will no longer appear in search.')">
+          <button class="btn small secondary" type="submit">Retire<span class="sr-only"> <%= c.plate %></span></button>
+        </form>
+        <% } %>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+<%- include('partials/footer') %>

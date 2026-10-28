@@ -1,0 +1,53 @@
+<%- include('partials/header') %>
+<div class="search-layout">
+  <form class="card filters" method="get" action="/search" aria-labelledby="find-h">
+    <h1 id="find-h">Find a car</h1>
+    <label for="location_id">Pickup location</label>
+    <select id="location_id" name="location_id" required>
+      <option value="">Choose…</option>
+      <% locations.forEach(function (l) { %><option value="<%= l.id %>" <%= data.location_id === l.id ? 'selected' : '' %>><%= l.name %></option><% }) %>
+    </select>
+    <label for="pickup">Pickup date</label>
+    <input id="pickup" name="pickup" type="date" value="<%= data.pickup || '' %>" required>
+    <label for="return">Return date</label>
+    <input id="return" name="return" type="date" value="<%= data.ret || '' %>" required>
+    <fieldset>
+      <legend>Category</legend>
+      <% categories.forEach(function (c) { %>
+        <p class="check"><input type="checkbox" id="cat-<%= c %>" name="category" value="<%= c %>" <%= data.categories.includes(c) ? 'checked' : '' %>><label for="cat-<%= c %>"><%= c %></label></p>
+      <% }) %>
+    </fieldset>
+    <button class="btn wide" type="submit">Search</button>
+  </form>
+  <section class="results" aria-live="polite">
+    <%- include('partials/errors', { errors }) %>
+    <% if (!searched) { %>
+      <div class="card empty"><h2>Where and when?</h2><p>Choose a location and dates to see available cars.</p></div>
+    <% } else if (!errors.length) { %>
+      <div class="results-head">
+        <h2><%= results.length %> car<%= results.length === 1 ? '' : 's' %> available · <%= data.pickup %> to <%= data.ret %></h2>
+        <span class="hint">Sorted by daily rate · <%= days %> day<%= days === 1 ? '' : 's' %></span>
+      </div>
+      <% if (!results.length) { %>
+        <div class="card empty"><p><strong>No cars match.</strong> Try different dates, another location, or fewer category filters.</p></div>
+      <% } %>
+      <ul class="car-list">
+      <% results.forEach(function (c) { %>
+        <li class="card car">
+          <div class="ph" aria-hidden="true"><%= c.category %></div>
+          <div class="grow">
+            <h3><%= c.year %> <%= c.make %> <%= c.model %></h3>
+            <p class="hint"><%= c.category %> · <%= c.seats %> seats · <%= c.transmission %> · <%= c.location %></p>
+          </div>
+          <div class="price">
+            <strong>$<%= c.daily_rate.toFixed(2) %>/day</strong>
+            <span class="hint">$<%= (c.daily_rate * days).toFixed(2) %> total</span>
+            <span class="soon btn small" title="Car details and booking are built in Sprint 2">Details (Sprint 2)</span>
+          </div>
+        </li>
+      <% }) %>
+      </ul>
+    <% } %>
+  </section>
+</div>
+<%- include('partials/footer') %>

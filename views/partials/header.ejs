@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · Car Rental</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="/">CAR RENTAL<% if (user && user.role !== 'customer') { %> · <%= user.role.toUpperCase() %><% } %></a>
+  <% if (user) { %>
+  <nav aria-label="Main">
+    <% if (user.role === 'customer') { %>
+      <a href="/search" <%- path.startsWith('/search') ? 'aria-current="page"' : '' %>>Search</a>
+      <span class="soon" title="Built in Sprint 2">My Reservations</span>
+      <span class="soon" title="Built in Sprint 3">Profile</span>
+    <% } else { %>
+      <% if (user.role === 'manager') { %><a href="/manager/reports" <%- path.startsWith('/manager/reports') ? 'aria-current="page"' : '' %>>Reports</a><% } %>
+      <a href="/staff/fleet" <%- path.startsWith('/staff/fleet') ? 'aria-current="page"' : '' %>>Fleet</a>
+      <span class="soon" title="Built in Sprint 2">Pickups &amp; Returns</span>
+      <% if (user.role === 'manager') { %><a href="/manager/staff" <%- path.startsWith('/manager/staff') ? 'aria-current="page"' : '' %>>Staff Accounts</a><% } %>
+    <% } %>
+  </nav>
+  <form method="post" action="/logout" class="logout">
+    <span class="who">Hi, <%= user.first_name %></span>
+    <button type="submit" class="btn secondary">Log out</button>
+  </form>
+  <% } %>
+</header>
+<main id="main">
+<% if (flash) { %><p class="flash" role="status"><%= flash %></p><% } %>
